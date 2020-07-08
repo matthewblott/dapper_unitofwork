@@ -1,9 +1,21 @@
 ﻿using System;
 
-public interface IUnitOfWork : IDisposable
+namespace dapper_unitofwork
 {
-  IBreedRepository BreedRepository { get; }
-  ICatRepository CatRepository { get; }
+  using Repositories.Interfaces;
 
-  void Commit();
+  public interface IUnitOfWork : IDisposable
+  {
+    ICategoryRepository CategoryRepository { get; }
+    ICustomerRepository CustomerRepository { get; }
+    IEmployeeRepository EmployeeRepository { get; }
+    IOrderRepository OrderRepository { get; }
+    IProductRepository ProductRepository { get; }
+    IRegionRepository RegionRepository { get; }
+    IShipperRepository ShipperRepository { get; }
+    ISupplierRepository SupplierRepository { get; }
+    ITerritoryRepository TerritoryRepository { get; }
+    
+    void Commit();
+  }
 }
