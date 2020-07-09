@@ -31,7 +31,7 @@ You can set a breakpoint in the ```Main``` method and step through the code whic
 
 ...
 
-using var work = new UnitOfWork(connectionString);
+using var work = new UnitOfWork(new SQLiteConnection(connectionString));
 
 var id = GetRandomText();
 
@@ -52,3 +52,15 @@ Console.WriteLine($"Customer {id} added successfully");
 
 ```
 
+### Change Database Vendor
+
+As mentioned above the code is pretty database agnostic. You might need to change the SQL for returning the seeded identity depending on which vendor you use (I might get round to fixing that so no changes are necessary). Just make sure you pass the appropriate ```IDbConnection``` into the constructor when you instantiate the ```UnitOfWork``` object.
+
+```csharp
+public UnitOfWork(IDbConnection connection)
+{
+  _connection = connection;
+  _connection.Open();
+  _transaction = _connection.BeginTransaction();
+}
+```
