@@ -2,7 +2,6 @@
 {
   using System;
   using System.Data;
-  using System.Data.SQLite;
   using Repositories.Implementations;
   using Repositories.Interfaces;
 
@@ -22,9 +21,9 @@
     
     private bool _disposed;
 
-    public UnitOfWork(string connectionString)
+    public UnitOfWork(IDbConnection connection)
     {
-      _connection = new SQLiteConnection(connectionString);
+      _connection = connection;
       _connection.Open();
       _transaction = _connection.BeginTransaction();
     }

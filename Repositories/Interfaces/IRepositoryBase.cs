@@ -6,7 +6,7 @@ namespace dapper_unitofwork.Repositories.Interfaces
   {
     IEnumerable<T> All();
     T Find(object id);
-    void Add(T entity);
+    object Add(T entity);
     void Update(T entity);
     void Remove(object id);
   }

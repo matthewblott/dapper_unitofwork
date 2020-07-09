@@ -21,6 +21,9 @@
     private static bool HasIdentityField => 
       !typeof(T).GetProperties().Any(p => p.Name == IdFieldName && p.PropertyType == typeof(string));
 
+    private static object GetIdFieldValue(T entity) => typeof(T).GetProperties()
+        .Single(p => p.Name == IdFieldName).GetValue(entity);
+
     protected RepositoryBase(IDbTransaction transaction) => Transaction = transaction;
 
     public IEnumerable<T> All() => Connection.Query<T>($"select * from {TableName} ");
@@ -29,13 +32,15 @@
       => Connection.Query<T>($"select * from {TableName} where {IdFieldName} = @id", 
         new { id }, Transaction).FirstOrDefault();
 
-    public void Add(T entity)
+    public object Add(T entity)
     {
       // Include Id field if it isn't an auto generated field
-      var sql = CreateInsertSql(GetProperties(HasIdentityField));
       var parameters = GetParams(GetProperties(), entity);
+      var sql = CreateInsertSql(GetProperties(HasIdentityField));
+      var rowId = Connection.QuerySingle<int>(sql, parameters, Transaction);
       
-      Connection.Execute(sql, parameters, Transaction);
+      // To avoid confusion the Id field's value is returned for non identity fields
+      return HasIdentityField ? rowId : GetIdFieldValue(entity);
     }
     
     public void Update(T entity)
@@ -104,11 +109,7 @@
       
       var valuesSql = $"({builder.Remove(builder.Length - 1, 1)})"; // Remove trailing comma
       var fieldsSql = valuesSql.Replace("@", string.Empty);
-      var sql = $"insert into {TableName} {fieldsSql} values {valuesSql}";
-      
-      // select last_insert_rowid()
-      // output inserted.{_typeName}Id 
-      // select cast(scope_identity() as int)
+      var sql = $"insert into {TableName} {fieldsSql} values {valuesSql}; select last_insert_rowid();";
       
       return sql;
     }
