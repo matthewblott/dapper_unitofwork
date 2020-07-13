@@ -1,6 +1,6 @@
 # dapper_unitofwork
 
-Boilerplate for unit of work pattern. No configuration ore database setup required - it uses a Sqlite database in the project file so the examples run smoothly.
+Boilerplate for unit of work pattern. No configuration or database setup required - it uses a Sqlite database in the project file so the examples run smoothly.
  
 Apart from the tiny snippet of SQL found in the ```CreateInsertSql``` method used for returning the created Id for identity fields ...
 ```
