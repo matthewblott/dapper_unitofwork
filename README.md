@@ -33,14 +33,14 @@ You can set a breakpoint in the ```Main``` method and step through the code whic
 
 using var work = new UnitOfWork(new SQLiteConnection(connectionString));
 
-var id = GetRandomText();
+var id = "ABCDE";
 
 // Add
 var entity = new Customer 
 {
   CustomerId = id,
-  CompanyName = GetRandomText(),
-  ContactName = GetRandomText(),
+  CompanyName = "Some Company Name",
+  ContactName = "Some Contact Name",
 };
 
 work.CustomerRepository.Add(entity);
